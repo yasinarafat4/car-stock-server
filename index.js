@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     // Collections
     const categoryCollection = client.db("carStock").collection("categories");
@@ -51,12 +51,24 @@ async function run() {
       res.send(result);
     });
 
+    // Getting all data
+    app.get("/addToys", async (req, res) => {
+      const result = await toysCollection.find().toArray();
+      res.send(result);
+    });
+
     // POST method for Add Toy Page
-    app.post("/postToy", async (req, res) => {
+    app.post("/addToys", async (req, res) => {
       const body = req.body;
       const result = await toysCollection.insertOne(body);
       res.send(result);
       console.log(body);
+    });
+
+    // GET method for Add Toy Page to show the all added data
+    app.get("/addToys", async (req, res) => {
+      const result = await toysCollection.find().toArray();
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
