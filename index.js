@@ -29,6 +29,7 @@ async function run() {
     const categoryCollection = client.db("carStock").collection("categories");
     const toysCollection = client.db("carStock").collection("toys");
 
+    // Getting categories data
     app.get("/categories/:category", async (req, res) => {
       console.log(req.params.category);
       if (
@@ -44,6 +45,7 @@ async function run() {
       }
     });
 
+    // Getting single category data
     app.get("/categories/:category/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -65,7 +67,15 @@ async function run() {
       res.send(result);
     });
 
-    // Getting some data for My Toy page
+    // Getting single toy data
+    app.get("/addToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await toysCollection.findOne(query);
+      res.send(result);
+    });
+
+    // Getting data for My Toy page
     app.get("/myToys", async (req, res) => {
       console.log(req.query.email);
       let query = {};
