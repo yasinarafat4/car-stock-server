@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -23,7 +23,42 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    // await client.connect();
+    await client.connect();
+
+    // Collections
+    const categoryCollection = client.db("carStock").collection("categories");
+    const toysCollection = client.db("carStock").collection("toys");
+
+    app.get("/categories/:category", async (req, res) => {
+      console.log(req.params.category);
+      if (
+        req.params.category == "Sports Car" ||
+        req.params.category == "Regular Car" ||
+        req.params.category == "Truck"
+      ) {
+        const cursor = categoryCollection.find({
+          category: req.params.category,
+        });
+        const result = await cursor.toArray();
+        return res.send(result);
+      }
+    });
+
+    app.get("/categories/:category/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await categoryCollection.findOne(query);
+      res.send(result);
+    });
+
+    // POST method for Add Toy Page
+    app.post("/postToy", async (req, res) => {
+      const body = req.body;
+      const result = await toysCollection.insertOne(body);
+      res.send(result);
+      console.log(body);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
