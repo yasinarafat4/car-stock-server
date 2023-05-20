@@ -86,6 +86,24 @@ async function run() {
       res.send(result);
     });
 
+    // Indexing for search field of All Toys page
+    const indexKey = { name: 1 };
+    const indexOption = { name: "searchByName" };
+
+    const result = await toysCollection.createIndex(indexKey, indexOption);
+
+    app.get("/searchToys/:text", async (req, res) => {
+      const searchText = req.params.text;
+
+      const result = await toysCollection
+        .find({
+          $or: [{ name: { $regex: searchText, $options: "i" } }],
+        })
+        .toArray();
+
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
