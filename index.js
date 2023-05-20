@@ -51,12 +51,6 @@ async function run() {
       res.send(result);
     });
 
-    // Getting all data
-    app.get("/addToys", async (req, res) => {
-      const result = await toysCollection.find().toArray();
-      res.send(result);
-    });
-
     // POST method for Add Toy Page
     app.post("/addToys", async (req, res) => {
       const body = req.body;
@@ -68,6 +62,17 @@ async function run() {
     // GET method for Add Toy Page to show the all added data
     app.get("/addToys", async (req, res) => {
       const result = await toysCollection.find().toArray();
+      res.send(result);
+    });
+
+    // Getting some data for My Toy page
+    app.get("/myToys", async (req, res) => {
+      console.log(req.query.email);
+      let query = {};
+      if (req.query?.email) {
+        query = { sellerEmail: req.query.email };
+      }
+      const result = await toysCollection.find(query).toArray();
       res.send(result);
     });
 
