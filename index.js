@@ -86,6 +86,14 @@ async function run() {
       res.send(result);
     });
 
+    // DELETE method
+    app.delete("/myToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await toysCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // Indexing for search field of All Toys page
     const indexKey = { name: 1 };
     const indexOption = { name: "searchByName" };
