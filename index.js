@@ -75,7 +75,7 @@ async function run() {
       res.send(result);
     });
 
-    // Getting data for My Toy page
+    // Getting data for My Toys page
     app.get("/myToys", async (req, res) => {
       console.log(req.query.email);
       let query = {};
@@ -86,11 +86,30 @@ async function run() {
       res.send(result);
     });
 
-    // DELETE method
+    // DELETE method for My Toys page
     app.delete("/myToys/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await toysCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // UPDATE method for My Toys page
+    app.put("/updateToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const body = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          pictureUrl: body.pictureUrl,
+          name: body.name,
+          subCategory: body.subCategory,
+          price: body.price,
+          quantity: body.quantity,
+          description: body.description,
+        },
+      };
+      const result = await toysCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
 
