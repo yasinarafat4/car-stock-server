@@ -63,7 +63,16 @@ async function run() {
 
     // GET method for Add Toy Page to show the all added data
     app.get("/addToys", async (req, res) => {
-      const result = await toysCollection.find().toArray();
+      console.log(req.query);
+      const page = parseInt(req.query.page) || 0;
+      const limit = parseInt(req.query.limit) || 20;
+      const skip = page * limit;
+
+      const result = await toysCollection
+        .find()
+        .skip(skip)
+        .limit(limit)
+        .toArray();
       res.send(result);
     });
 
@@ -131,12 +140,11 @@ async function run() {
       res.send(result);
     });
 
-
     // Getting total numbers of toys for pagination
-    app.get("/totalToys", async(req, res)=>{
+    app.get("/totalToys", async (req, res) => {
       const result = await toysCollection.estimatedDocumentCount();
-      res.send({totalToys: result})
-    })
+      res.send({ totalToys: result });
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
