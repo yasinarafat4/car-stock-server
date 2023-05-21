@@ -87,11 +87,13 @@ async function run() {
     // Getting data for My Toys page
     app.get("/myToys", async (req, res) => {
       console.log(req.query.email);
+
       let query = {};
       if (req.query?.email) {
-        query = { sellerEmail: req.query.email };
+        query = { sellerEmail: req.query?.email };
       }
-      const result = await toysCollection.find(query).toArray();
+      const cursor = toysCollection.find(query).sort({ price: -1 });
+      const result = await cursor.toArray();
       res.send(result);
     });
 
@@ -104,7 +106,7 @@ async function run() {
     });
 
     // UPDATE method for My Toys page
-    app.put("/updateToy/:id", async (req, res) => {
+    app.patch("/updateToy/:id", async (req, res) => {
       const id = req.params.id;
       const body = req.body;
       const filter = { _id: new ObjectId(id) };
