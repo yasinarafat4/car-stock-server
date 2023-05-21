@@ -95,7 +95,7 @@ async function run() {
     });
 
     // UPDATE method for My Toys page
-    app.put("/updateToys/:id", async (req, res) => {
+    app.put("/updateToy/:id", async (req, res) => {
       const id = req.params.id;
       const body = req.body;
       const filter = { _id: new ObjectId(id) };
@@ -130,6 +130,13 @@ async function run() {
 
       res.send(result);
     });
+
+
+    // Getting total numbers of toys for pagination
+    app.get("/totalToys", async(req, res)=>{
+      const result = await toysCollection.estimatedDocumentCount();
+      res.send({totalToys: result})
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
